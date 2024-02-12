@@ -23,7 +23,7 @@ import java.util.UUID;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final WebClient webClient;
+    private final WebClient.Builder webClientBuilder;
 
     public Order placeOrder(Order order) {
         order.setOrderNumber(UUID.randomUUID().toString());
@@ -40,9 +40,9 @@ public class OrderService {
                 .map(OrderLineItem::getSkuCode)
                 .toList();
 
-        InventoryResponse[] inventoryResponses = webClient
+        InventoryResponse[] inventoryResponses = webClientBuilder.build()
                 .get()
-                .uri("http://localhost:8082/api/v1/inventory",
+                .uri("http://inventory-service/api/v1/inventory",
                         uriBuilder -> uriBuilder.queryParam("skuCodes", skuCodes).build())
                 .retrieve()
                 .bodyToMono(InventoryResponse[].class)
