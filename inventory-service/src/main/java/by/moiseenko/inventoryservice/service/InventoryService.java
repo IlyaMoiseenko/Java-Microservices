@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,9 +21,7 @@ public class InventoryService {
     private final InventoryRepository inventoryRepository;
 
     @Transactional(readOnly = true)
-    public boolean isInStock(String skuCode) {
-        Optional<Inventory> bySkuCode = inventoryRepository.findBySkuCode(skuCode);
-
-        return bySkuCode.isPresent();
+    public List<Inventory> isInStock(List<String> skuCodes) {
+        return inventoryRepository.findBySkuCodeIn(skuCodes);
     }
 }
