@@ -1,0 +1,60 @@
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      routes:
+        ## Product service
+        - id: product-getAllProduct
+          uri: lb://product-service
+          predicates:
+            - Path=/api/v1/product
+            - Method=GET
+        - id: product-getProductById
+          uri: lb://product-service
+          predicates:
+            - Path=/api/v1/product/{id}
+            - Method=GET
+        - id: product-createNewProduct
+          uri: lb://product-service
+          predicates:
+            - Path=/api/v1/product
+            - Method=POST
+
+        ## Order service
+        - id: order-createNewOrder
+          uri: lb://order-service
+          predicates:
+            - Path=/api/v1/order
+            - Method=POST
+
+        ## Inventory service
+        - id: inventory-isInStock
+          uri: lb://inventory-service
+          predicates:
+            - Path=/api/v1/inventory
+            - Method=GET
+
+
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+
+    register-with-eureka: true
+
+
+logging:
+  level:
+    root: info
+    org:
+      springframework:
+        cloud:
+          gateway=TRACE:
+          gateway:
+            route:
+              RouteDefinitionLocator: INFO
+server:
+  port: 8080
